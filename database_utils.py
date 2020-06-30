@@ -3,7 +3,9 @@ from io import BytesIO
 from zipfile import ZipFile
 import pandas as pd
 import numpy as np
-from scipy.stats import shapiro, normaltest, spearmanr, mannwhitneyu, kruskal
+from scipy.stats import shapiro, normaltest, spearmanr, mannwhitneyu, kruskal, pearsonr
+from sklearn.metrics import mean_squared_error, r2_score
+from math import sqrt
 
 def GetIdeb(url):
     '''
@@ -186,3 +188,26 @@ def NonParamTest(df, col, alpha = 0.05):
         print('Mesma distribuição (H0 não foi rejeitada)', p, col) 
     else:
         print('Distribuições diferentes (Rejeita-se H0)', p, col)
+
+def Metrics(ytrue, ypred):
+    '''
+    Esta funcao calcula metricas de avaliacao de perfomance do modelo
+    Parametros:
+    ytrue: valores para teste da variavel resposta
+    ypred: valores preditos da variavel resposta pelo modelo escolhido
+    '''   
+    ytrue, ypred = np.array(ytrue), np.array(ypred)
+    
+    # Erro Percentual Absoluto Médio (mean absolute percentage error)
+    mape = np.mean(np.abs((ytrue-ypred) / ytrue)) * 100
+    
+    # Raiz do Erro Médio Quadrático (root mean square error)
+    rmse = sqrt(mean_squared_error(ytrue, ypred))
+    
+    # Coeficiente de determinação
+    r2 = r2_score(ytrue, ypred)
+
+    # Coeficiente de correlação de Pearson
+    corr, _ = pearsonr(ytrue, ypred)
+    
+    return mape, rmse, r2, corr
