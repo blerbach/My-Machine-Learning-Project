@@ -1,0 +1,4 @@
+.ipynb_checkpoints
+__pycache__/
+MICRODADOS_ENEM_2018.csv
+df_tratado.csv
